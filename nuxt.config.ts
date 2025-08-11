@@ -1,16 +1,16 @@
-import { resolve } from 'path'
+import { resolve } from "path";
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: "2025-07-15",
   devtools: { enabled: true },
   alias: {
-  "@": resolve(__dirname, ""),
-},
-  css: ['@/assets/css/style.scss'],
+    "@": resolve(__dirname, ""),
+  },
+  css: ["@/assets/css/style.scss"],
   modules: [
-    '@nuxtjs/tailwindcss', 
-    '@ant-design-vue/nuxt',    
-    '@pinia/nuxt',
-    'pinia-plugin-persistedstate/nuxt',
-  ]
-})
+    "@nuxtjs/tailwindcss",
+    "@ant-design-vue/nuxt",
+    "@pinia/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
+  ],
+});
