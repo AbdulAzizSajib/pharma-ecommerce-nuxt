@@ -6,5 +6,6 @@ export const showNotification = (type, message) => {
     theme: "light",
     type: type,
     autoClose: 3000,
+    position: "top-center",
   });
 };

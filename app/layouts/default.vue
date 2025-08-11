@@ -12,7 +12,7 @@
             <span> Pharma Ecommerce</span>
           </nuxt-link>
         </div>
-        <div class="shop mx-4 hidden md:block">
+        <!-- <div class="shop mx-4 hidden md:block">
           <nuxt-link ::to="{ name: 'shop' }" class="text-md text-primary">
             <div class="flex items-center">
               <Icon class="size-9 mr-2" icon="stash:shop-solid" />
@@ -20,8 +20,8 @@
               <span class="hidden lg:block">Shop</span>
             </div>
           </nuxt-link>
-        </div>
-        <div class="order-tracking hidden md:block">
+        </div> -->
+        <div class="hidden md:block mx-4">
           <nuxt-link
             :to="{ name: 'order-tracking' }"
             class="text-md text-primary"
@@ -43,7 +43,7 @@
           class="w-full capitalize"
         >
           <a-select-option v-for="item in searchData" :key="item.id">
-            <nuxt-link to="`/product/${item?.id}`">
+            <nuxt-link :to="`/product/${item?.id}`">
               <div class="rounded-md capitalize">
                 <h3 class="font-bold text-lg">{{ item?.name }}</h3>
 
@@ -65,29 +65,27 @@
       </div>
       <!-- cart -->
 
-      <div class="hidden md:flex space-x-4 items-center">
+      <div class="hidden md:flex space-x-1 items-center">
         <nuxt-link
           :to="{ name: 'wishlist' }"
           class="p-2 rounded-full bg-primary hover:bg-primary-dark transition duration-300"
           title="Wishlist"
         >
-          <Icon class="size-8 mr-2" icon="mdi-light:heart" />
+          <Icon class="size-6 mr-2" icon="mdi-light:heart" />
         </nuxt-link>
-
+        |
         <nuxt-link :to="{ name: 'cart' }" class="relative" title="Cart">
           <a-badge :count="cartProduct?.length">
-            <button
-              class="p-2 rounded-full bg-primary hover:bg-primary-dark transition duration-300"
-            >
-              <Icon class="size-8 mr-2" icon="bitcoin-icons:cart-outline" />
+            <button class="">
+              <Icon class="size-7 mr-2" icon="bitcoin-icons:cart-outline" />
             </button>
           </a-badge>
         </nuxt-link>
       </div>
 
-      <a-dropdown class="lg:block ml-2" :trigger="['click']">
+      <a-dropdown class="lg:block ml-4" :trigger="['click']">
         <button type="button" class="">
-          <div class="w-10 rounded-full">
+          <div class="w-8 rounded-full">
             <img
               alt="Tailwind CSS Navbar component"
               src="@/assets/images/human.png"
@@ -97,34 +95,34 @@
         <template #overlay class="">
           <a-menu>
             <a-menu-item>
-              <nuxt-link to="/profile"> profile </nuxt-link>
+              <nuxt-link to="/order"> My Orders</nuxt-link>
+            </a-menu-item>
+            <a-menu-item>
+              <nuxt-link to="/profile"> profile Setting</nuxt-link>
             </a-menu-item>
             <a-menu-item>
               <template v-if="isLoggedIn">
                 <button
                   @click="handleLogout"
-                  class="p-3 flex items-center justify-center rounded-full bg-primary hover:bg-primary-dark transition duration-300"
+                  class="flex items-center text-start justify-start rounded-full bg-primary hover:bg-primary-dark transition duration-300"
                   title="Logout"
                 >
-                  <Icon class="size-8 mr-2" icon="hugeicons:logout-04" />
-                  <!-- icon -->
+                  <p>Logout</p>
+                  <Icon class="size-4 ml-2" icon="hugeicons:logout-04" />
                 </button>
               </template>
 
               <template v-else>
-                <!-- Signup/Login Button -->
                 <nuxt-link
                   :to="{ name: 'login' }"
-                  class="flex text-white justify-center p-2 rounded-full bg-primary hover:bg-primary-dark transition duration-300"
+                  class="flex items-center text-start justify-start bg-primary hover:bg-primary-dark transition duration-300"
                   title="Signup"
                 >
-                  <!-- <UserIcon class="w-5 h-5 text-white" /> -->
-                  <!-- icon -->
+                  <p>login</p>
                   <Icon
-                    class="size-8 mr-2"
+                    class="size-6 ml-2"
                     icon="material-symbols-light:login"
                   />
-                  login
                 </nuxt-link>
               </template>
             </a-menu-item>
@@ -344,20 +342,43 @@ import { Icon } from "@iconify/vue";
 const searchData = ref([]);
 
 const featured_categories = ref([]);
-const isLoggedIn = ref(false);
+const isLoggedIn = ref("");
+
 const isMenuOpen = ref(false);
 import { useCartStore } from "@/stores/cart";
 
 import { storeToRefs } from "pinia";
+import { apiBasePharma } from "@/config";
+import axios from "axios";
 const cartStore = useCartStore();
 const { cartProduct } = storeToRefs(cartStore);
 
-const searchHandle = (e) => {
-  console.log(e);
+const searchHandle = async (event) => {
+  // console.log(event.target.value);
+  try {
+    const res = await axios.get(
+      `${apiBasePharma}/products/search?term=${event}`
+    );
+    if (res?.data) {
+      searchData.value = res.data.products;
+      console.log(searchData.value);
+    } else {
+      searchData.value = [];
+    }
+  } catch (error) {
+    searchData.value = [];
+    console.error("Search error:", error);
+  }
 };
 const handleLogout = () => {
   console.log("logOut");
+  localStorage.removeItem("token" || "");
+  localStorage.removeItem("user" || "");
 };
+
+onMounted(() => {
+  isLoggedIn.value = localStorage.getItem("token") || "";
+});
 </script>
 
 <style lang="scss" scoped></style>

@@ -1,6 +1,4 @@
 import { defineStore } from "pinia";
-// import { apiBase, imgBase } from "@/config";
-import axios from "axios";
 
 export const useCartStore = defineStore("cartStore", {
   state: () => ({
@@ -42,43 +40,16 @@ export const useCartStore = defineStore("cartStore", {
           ...this.cartProduct,
         ];
       }
+
+      console.log("this.cartProduct", this.cartProduct);
+
       this.calculateTotal();
     },
     //
     async clearCart() {
-      this.cartProduct = []; // Reset cart items
-      this.totalPrice = 0; // Reset total price
+      this.cartProduct = [];
+      this.totalPrice = 0;
     },
-
-    //
-    // async getTrackOrder(trackingId) {
-    //   this.isLoading = true;
-
-    //   try {
-    //     const response = await axios.get(
-    //       `${apiBase}/track-order?tracking_id=${trackingId}`
-    //     );
-    //     this.isLoading = false;
-    //     if (response.data.status === 200) {
-    //       this.orderStatus = response.data.data;
-
-    //       return response.data.data;
-    //     } else {
-    //       this.orderStatus = null;
-    //       ElNotification({
-    //         message: response.data.message,
-    //         type: "error",
-    //       });
-    //     }
-    //   } catch (error) {
-    //     this.isLoading = false;
-    //     this.orderStatus = null;
-    //     ElNotification({
-    //       message: error.message,
-    //       type: "error",
-    //     });
-    //   }
-    // },
   },
   persist: true,
 });

@@ -7,10 +7,11 @@ export default defineNuxtConfig({
     "@": resolve(__dirname, ""),
   },
   css: ["@/assets/css/style.scss"],
+  // plugins: ["~/plugins/pinia-persistedstate.js"],
   modules: [
     "@nuxtjs/tailwindcss",
     "@ant-design-vue/nuxt",
     "@pinia/nuxt",
-    "pinia-plugin-persistedstate/nuxt",
+    // "@pinia-plugin-persistedstate/nuxt",
   ],
 });
