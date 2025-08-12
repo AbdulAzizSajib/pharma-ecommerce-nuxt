@@ -12,15 +12,15 @@
             <span> Pharma Ecommerce</span>
           </nuxt-link>
         </div>
-        <!-- <div class="shop mx-4 hidden md:block">
-          <nuxt-link ::to="{ name: 'shop' }" class="text-md text-primary">
+        <div class="shop mx-4 hidden md:block">
+          <nuxt-link :to="{ name: 'shop' }" class="text-md text-primary">
             <div class="flex items-center">
               <Icon class="size-9 mr-2" icon="stash:shop-solid" />
 
               <span class="hidden lg:block">Shop</span>
             </div>
           </nuxt-link>
-        </div> -->
+        </div>
         <div class="hidden md:block mx-4">
           <nuxt-link
             :to="{ name: 'order-tracking' }"

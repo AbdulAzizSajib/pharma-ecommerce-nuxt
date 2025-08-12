@@ -48,6 +48,10 @@
         :slidesPerView="10"
         :spaceBetween="30"
         :freeMode="true"
+        :autoplay="{
+          delay: 2500,
+          disableOnInteraction: false,
+        }"
         :pagination="{
           clickable: true,
         }"

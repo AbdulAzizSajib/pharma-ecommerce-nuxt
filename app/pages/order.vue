@@ -23,21 +23,24 @@
                 <th class="px-4 py-2 border border-gray-200 text-gray-700">
                   Total (BD)
                 </th>
-                <th class="px-4 py-2 border border-gray-200 text-gray-700">
-                  Cancelled
-                </th>
+
                 <th class="px-4 py-2 border border-gray-200 text-gray-700">
                   Order Method
                 </th>
                 <th class="px-4 py-2 border border-gray-200 text-gray-700">
                   Payment Status
                 </th>
+                <th class="px-4 py-2 border border-gray-200 text-gray-700">
+                  Order Cancel
+                </th>
               </tr>
             </thead>
 
             <tbody>
-              <tr class="text-center">
-                Not Order Found
+              <tr v-if="loading">
+                <td colspan="9" class="w-full px-4 py-2 border border-gray-200">
+                  Not Order Found ...
+                </td>
               </tr>
               <tr
                 v-for="(item, index) in orderData"
@@ -58,20 +61,7 @@
                 <td class="px-4 py-2 border border-gray-200">
                   {{ formatDate(item?.sale_date) }}
                 </td>
-                <!-- <td class="px-4 py-2 border border-gray-200 text-left">
-                  <div
-                    v-for="(productItem, index) in item?.sale_products"
-                    :key="index"
-                    class="flex items-center mb-2"
-                  >
-                    <img
-                      :src="`${imgBase}${productItem?.product_image}`"
-                      class="w-8 h-8 rounded mr-2"
-                      alt="Product image"
-                      @error="$event.target.src = `${defaultImage}`"
-                    />
-                  </div>
-                </td> -->
+
                 <td class="px-4 py-2 border border-gray-200 text-left">
                   <div
                     v-for="(productItem, index) in item?.sale_products"
@@ -84,15 +74,7 @@
                 <td class="px-4 py-2 border border-gray-200">
                   {{ Math.round(item?.total) }} BD
                 </td>
-                <td class="px-4 py-2 border border-gray-200">
-                  <span
-                    :class="
-                      item?.cancelled == 0 ? 'text-gray-500' : 'text-red-500'
-                    "
-                  >
-                    {{ item?.cancelled == 0 ? "No" : "Yes" }}
-                  </span>
-                </td>
+
                 <td class="px-4 py-2 border border-gray-200">
                   {{ item?.payment_method?.name }}
                 </td>
@@ -104,6 +86,57 @@
                   >
                     {{ item?.paid_amount ? "Paid" : "Unpaid" }}
                   </span>
+                </td>
+                <td class="px-4 py-2 border border-gray-200">
+                  <a-popconfirm
+                    title="Are you sure you want to cancel the order?"
+                    :disabled="
+                      item.verify_status == 1 || item.verify_status == 2
+                    "
+                    @confirm="handleCancel(item.id)"
+                    placement="top"
+                  >
+                    <button
+                      :disabled="
+                        item.verify_status == 1 || item.verify_status == 2
+                      "
+                      class="flex items-center px-4 py-2 border rounded-lg transition-colors duration-200 ease-in-out"
+                      :class="{
+                        'text-green-500':
+                          item?.verify_status == 0 ||
+                          item?.verify_status == null,
+                        'text-red-500 bg-red-100':
+                          item?.verify_status == 1 || item?.verify_status == 2,
+                        'bg-gray-300':
+                          item?.verify_status == 1 || item?.verify_status == 2,
+                        'hover:bg-green-200':
+                          item?.verify_status == 0 ||
+                          (item?.verify_status == null &&
+                            !item.verify_status == 1 &&
+                            !item.verify_status == 2),
+                      }"
+                    >
+                      <span class="flex items-center">
+                        <span>
+                          {{
+                            item?.verify_status == 0 ||
+                            item?.verify_status == null
+                              ? "Pending"
+                              : "Order Cancelled"
+                          }}
+                        </span>
+                        <Icon
+                          v-if="
+                            item?.verify_status == 0 ||
+                            item?.verify_status == null
+                          "
+                          class="size-4 ml-3 text-red-500 font-bold"
+                          icon="hugeicons:cancel-01"
+                          :ssr="true"
+                        />
+                      </span>
+                    </button>
+                  </a-popconfirm>
                 </td>
               </tr>
             </tbody>
@@ -128,6 +161,8 @@
 <script setup>
 import { apiBasePharma, getTokenConfig } from "@/config";
 import axios from "axios";
+import { Icon } from "@iconify/vue";
+import { showNotification } from "@/util/notification";
 
 const loading = ref(false);
 const orderData = ref([]);
@@ -168,6 +203,20 @@ const formatDate = (dateString) => {
   const month = ("0" + (date.getMonth() + 1)).slice(-2); // Add leading zero if month < 10
   const day = ("0" + date.getDate()).slice(-2); // Add leading zero if day < 10
   return `${day}-${month}-${year}`;
+};
+
+const handleCancel = async (id) => {
+  try {
+    const res = await axios.post(
+      `${apiBasePharma}/sale/request-to-suspend/${id}`
+    );
+    if (res.data) {
+      showNotification("success", res.data.message);
+      await getOrderInfo();
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
 };
 
 onMounted(async () => {
