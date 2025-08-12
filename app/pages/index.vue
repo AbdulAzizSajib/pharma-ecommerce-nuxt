@@ -59,24 +59,26 @@
         class="mySwiper"
       >
         <swiper-slide v-for="cat in companies" :key="cat?.id">
-          <div class="w-full flex flex-col justify-center items-center">
-            <div
-              class="bg-[#c0d3ec] w-32 h-32 flex justify-center items-center cursor-pointer text-white font-bold text-2xl uppercase rounded-lg text-2xl"
-            >
-              <span>
-                {{
-                  cat?.company_name?.split(" ").length === 2
-                    ? cat?.company_name?.split(" ")[0].charAt(0) +
-                      cat?.company_name?.split(" ")[1].charAt(0)
-                    : cat?.company_name?.charAt()
-                }}
-              </span>
-            </div>
+          <nuxt-link :to="{ name: 'shop', query: { slug: cat?.id || 0 } }">
+            <div class="w-full flex flex-col justify-center items-center">
+              <div
+                class="bg-[#c0d3ec] w-32 h-32 flex justify-center items-center cursor-pointer text-white font-bold text-2xl uppercase rounded-lg text-2xl"
+              >
+                <span>
+                  {{
+                    cat?.name?.split(" ").length === 2
+                      ? cat?.name?.split(" ")[0].charAt(0) +
+                        cat?.name?.split(" ")[1].charAt(0)
+                      : cat?.name?.charAt()
+                  }}
+                </span>
+              </div>
 
-            <h2 class="mt-2 font-semibold text-lg text-center">
-              {{ cat?.company_name?.split(" ")?.at(0) }}
-            </h2>
-          </div>
+              <h2 class="mt-2 font-semibold text-lg text-center">
+                {{ cat?.name?.split(" ")?.at(0) }}
+              </h2>
+            </div>
+          </nuxt-link>
         </swiper-slide>
       </swiper>
     </div>
@@ -196,10 +198,10 @@ const companies = ref([]);
 const companiesloading = ref(false);
 
 // Function to fetch companies
-const getCompanies = async () => {
+const getCategories = async () => {
   try {
     companiesloading.value = true;
-    const res = await axios.get(`${apiBasePharma}/all-supplier`);
+    const res = await axios.get(`${apiBasePharma}/category_all`);
     companiesloading.value = false;
     if (res.data) {
       companies.value = res.data;
@@ -230,14 +232,10 @@ const handleAddToCart = (products) => {
   console.log(products);
   getCart(products);
   showNotification("success", `${products.name} added to cart!`);
-  //   toast.success(`${products.name} added to cart!`, {
-  //     position: "top-center",
-  //     autoClose: 2000,
-  //   });
 };
 
 onMounted(async () => {
-  await getCompanies();
+  await getCategories();
   await getCollection();
 });
 </script>
