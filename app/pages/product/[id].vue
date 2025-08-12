@@ -66,11 +66,16 @@
                 <div class="lg:order-2 lg:ml-5">
                   <div class="overflow-hidden rounded-lg">
                     <!-- <Loader v-if="isFetching" /> -->
-                    <a-image :src="default_img" class="w-full" />
+                    <a-image
+                      :width="600"
+                      :height="400"
+                      class="object-cover"
+                      :src="`${imgBasePharma}/${productDetail?.product?.product_images[0]?.path}`"
+                    />
                   </div>
                 </div>
 
-                <div class="mt-2 w-full lg:w-32 lg:flex-shrink-0">
+                <!-- <div class="mt-2 w-full lg:w-32 lg:flex-shrink-0">
                   <div class="flex flex-row items-start lg:flex-col">
                     <button
                       type="button"
@@ -102,21 +107,8 @@
                         alt=""
                       />
                     </button>
-
-                    <!-- <template v-for="sideImge in productDetail?.images">
-                      <button
-                        type="button"
-                        class="flex-0 border items-center w-full flex justify-center aspect-square mb-3 h-20 overflow-hidden rounded-lg text-center"
-                      >
-                        <a-image
-                          class="object-cover border"
-                          :src="imgBase + sideImge?.image"
-                          alt=""
-                        />
-                      </button>
-                    </template> -->
                   </div>
-                </div>
+                </div> -->
               </div>
             </div>
 
@@ -132,36 +124,9 @@
               <p class="text-sm p-1">
                 Categories : {{ productDetail?.categories?.at(0)?.name }}
               </p>
-              <!-- <p class="text-sm p-1">
-              Company : {{ productDetail?.product?.supplier?.company_name }}
-            </p> -->
-
-              <!-- <div class="mt-5 flex items-center">
-              <div class="flex items-center">
-                <i class="fa-solid fa-star text-yellow-500"></i>
-                <i class="fa-solid fa-star text-yellow-500"></i>
-                <i class="fa-solid fa-star text-yellow-500"></i>
-                <i class="fa-solid fa-star text-yellow-500"></i>
-                <i class="fa-solid fa-star text-yellow-500"></i>
-              </div>
-              <p class="ml-2 text-sm font-medium text-gray-500">
-                {{ productDetail?.review_count }} Reviews
-              </p>
-            </div> -->
 
               <h2 class="mt-2 text-xl font-bold text-gray-900">
                 {{ productDetail?.product?.product_prices?.selling_price }} BDT
-                <!-- <span class="line-through font-light text-base text-gray-500"
-                >{{ productDetail?.selling }} BDT</span
-              > -->
-                <!-- <span class="px-2 ml-3 text-sm rounded-2xl bg-red-300"
-                >{{
-                  productDetail?.selling - productDetail?.offered > 0
-                    ? productDetail?.selling - productDetail?.offered
-                    : 0
-                }}
-                BDT</span
-              > -->
               </h2>
 
               <hr class="border mt-3" />
@@ -176,11 +141,6 @@
                   </h2>
                 </div>
               </div>
-
-              <!-- <div v-html="productDetail?.description"></div>
-            <div v-html="productDetail?.overview"></div> -->
-
-              <!-- <hr class="border mt-2"> -->
 
               <div
                 class="mt-2 space-x-3 flex flex-col items-center justify-between space-y-4 border-t border-b py-4 sm:flex-row sm:space-y-0"
@@ -250,63 +210,12 @@
           </div>
         </div>
       </section>
-      <!-- 
-      <section class="px-4">
-        <div>
-          <a-tabs tabPosition="top" v-model:activeKey="activeKey">
-            <a-tab-pane key="1">
-              <template #tab
-                ><h2
-                  class="capitalize text-lg tracking-wider text-black font-medium"
-                >
-                  Descriptions
-                </h2></template
-              >
-              <div v-html="productDetail?.description"></div>
-            </a-tab-pane>
-            <a-tab-pane key="2" force-render>
-              <template #tab
-                ><h2
-                  class="capitalize text-lg tracking-wider text-black font-medium"
-                >
-                  Customer Feedback
-                </h2></template
-              >
-
-              <Loader v-if="isFetching" />
-              <div v-if="reviewDetail?.all?.data?.length">
-                <template
-                  v-for="review in reviewDetail?.all?.data"
-                  :key="review.id"
-                >
-                  <div class="flex justify-between items-start border-b p-4">
-                    <div class="w-10/12">
-                      <h2 class="text-lg font-semibold text-gray-800">
-                        {{ review.user.name }}
-                      </h2>
-                      <a-rate :value="review.rating" disabled class="mt-1" />
-                      <p class="mt-2 text-gray-600">{{ review.review }}</p>
-                    </div>
-
-                    <div class="text-right text-gray-500 w-2/12">
-                      <p class="text-sm">
-                        {{ moment(review.created).format("LL") }}
-                      </p>
-                    </div>
-                  </div>
-                </template>
-              </div>
-              <span v-else class="text-gray-500">No review</span>
-            </a-tab-pane>
-          </a-tabs>
-        </div>
-      </section> -->
     </div>
   </NuxtLayout>
 </template>
 
 <script setup>
-import { apiBasePharma } from "@/config";
+import { apiBasePharma, imgBasePharma } from "@/config";
 import axios from "axios";
 
 import default_img from "../../assets/images/default.jpg";

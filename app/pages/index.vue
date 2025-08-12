@@ -123,7 +123,12 @@
               <nuxt-link
                 :to="{ name: 'product-id', params: { id: item?.id || 0 } }"
               >
-                <a-image :src="medisine" />
+                <a-image
+                  :width="350"
+                  :height="300"
+                  class="object-cover"
+                  :src="`${imgBasePharma}/${item?.product_images[0]?.path}`"
+                />
               </nuxt-link>
             </div>
 
@@ -187,7 +192,7 @@ const modules = [Autoplay, Navigation];
 import medisine from "../../assets/images/medisine.jpeg";
 
 // Axios and other imports
-import { apiBasePharma } from "@/config";
+import { apiBasePharma, imgBasePharma } from "@/config";
 
 import { ref, onMounted } from "vue";
 import axios from "axios";
@@ -221,6 +226,7 @@ const getCollection = async () => {
     collection_loading.value = false;
     if (res.data) {
       collections.value = res.data;
+      console.log(collections.value);
     }
   } catch (error) {
     console.log(error.message);

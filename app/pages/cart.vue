@@ -101,7 +101,12 @@
                     <div class="flex items-center gap-3">
                       <div class="avatar">
                         <div class="mask mask-squircle h-12 w-12">
-                          <img :src="default_img" alt="Avatar" />
+                          <a-image
+                            :width="50"
+                            :height="50"
+                            class="object-cover"
+                            :src="`${imgBasePharma}/${product?.product_images[0]?.path}`"
+                          />
                         </div>
                       </div>
                       <div>
@@ -255,7 +260,7 @@ import { storeToRefs } from "pinia";
 import default_img from "@/assets/images/Banner/default.jpg";
 import breadCrumb_img from "@/assets/images/breadCrumb.jpeg";
 
-import { formatNumber } from "@/config";
+import { formatNumber, imgBasePharma } from "@/config";
 import { showNotification } from "@/util/notification";
 
 const cartStore = useCartStore();

@@ -94,10 +94,10 @@
         </button>
         <template #overlay class="">
           <a-menu>
-            <a-menu-item>
+            <a-menu-item v-if="token">
               <nuxt-link to="/order"> My Orders</nuxt-link>
             </a-menu-item>
-            <a-menu-item>
+            <a-menu-item v-if="token">
               <nuxt-link to="/profile"> profile Setting</nuxt-link>
             </a-menu-item>
             <a-menu-item>
@@ -376,8 +376,15 @@ const handleLogout = () => {
   localStorage.removeItem("user" || "");
 };
 
+const token = ref();
+console.log("token", token);
+
 onMounted(() => {
   isLoggedIn.value = localStorage.getItem("token") || "";
+
+  if (token) {
+    token.value = localStorage.getItem("token" || "");
+  }
 });
 </script>
 

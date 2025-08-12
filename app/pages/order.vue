@@ -145,8 +145,7 @@
 
         <a-pagination
           class="mt-3"
-          v-if="!loading"
-          v-model:current="current"
+          v-model:current="currentPage"
           :total="backupData?.total"
           :show-size-changer="false"
           v-model:pageSize="pageSize"
@@ -167,8 +166,8 @@ import { showNotification } from "@/util/notification";
 const loading = ref(false);
 const orderData = ref([]);
 const backupData = ref();
-const current = ref(1);
-const pageSize = ref(20);
+const currentPage = ref(1);
+const pageSize = ref(15);
 
 const paginationInfo = ref();
 
@@ -176,7 +175,7 @@ const getOrderInfo = async () => {
   try {
     loading.value = true;
     const res = await axios.get(
-      `${apiBasePharma}/all-order-list-paginated?page=1&search=&paginate=20`,
+      `${apiBasePharma}/all-order-list-paginated?page=${currentPage.value}&search=&paginate=${pageSize.value}`,
       getTokenConfig()
     );
     loading.value = false;
@@ -184,8 +183,8 @@ const getOrderInfo = async () => {
     orderData.value = res?.data?.data;
     backupData.value = res.data;
 
-    pageSize.value = res?.data?.per_page;
-    current.value = res?.data?.current_page;
+    // pageSize.value = res?.data?.per_page;
+    // current.value = res?.data?.current_page;
     console.log(paginationInfo.value);
   } catch (error) {
     loading.value = false;
@@ -194,7 +193,8 @@ const getOrderInfo = async () => {
 };
 
 const pagination = async (page) => {
-  current.value = page;
+  currentPage.value = page;
+  await getOrderInfo();
 };
 
 const formatDate = (dateString) => {

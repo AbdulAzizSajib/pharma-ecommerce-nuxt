@@ -20,7 +20,9 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Name Field -->
               <div class="">
-                <label class="block text-sm font-medium mb-1">Your Name</label>
+                <label class="block text-sm font-medium mb-1"
+                  >Your Name <span class="text-red-500">*</span></label
+                >
                 <input
                   type="text"
                   class="w-full border rounded px-3 py-2"
@@ -33,7 +35,7 @@
               <!-- Mobile Number Field -->
               <div>
                 <label class="block text-sm font-medium mb-1"
-                  >Mobile Number</label
+                  >Mobile Number <span class="text-red-500">*</span></label
                 >
                 <input
                   type="tel"
@@ -46,7 +48,9 @@
 
               <!-- Address Field -->
               <div>
-                <label class="block text-sm font-medium mb-1">Address</label>
+                <label class="block text-sm font-medium mb-1"
+                  >Address <span class="text-red-500">*</span></label
+                >
                 <input
                   type="text"
                   class="w-full border rounded px-3 py-2"
@@ -57,7 +61,9 @@
               </div>
 
               <div>
-                <label class="block text-sm font-medium mb-1">Country</label>
+                <label class="block text-sm font-medium mb-1"
+                  >Country <span class="text-red-500">*</span></label
+                >
 
                 <a-select
                   :disabled="!userID"
@@ -75,7 +81,9 @@
                 </a-select>
               </div>
               <div>
-                <label class="block text-sm font-medium mb-1">City</label>
+                <label class="block text-sm font-medium mb-1"
+                  >City <span class="text-red-500">*</span></label
+                >
                 <a-select
                   :disabled="!userID"
                   v-model:value="address.city_id"
@@ -107,7 +115,9 @@
             <!-- Payment Options -->
             <!-- Payment Options -->
             <div class="mt-6">
-              <h6 class="text-lg font-semibold mb-3">Choose Payment Method</h6>
+              <h6 class="text-lg font-semibold mb-3">
+                Choose Payment Method <span class="text-red-500">*</span>
+              </h6>
               <div class="flex gap-4">
                 <div
                   v-for="method in paymentMethod"
@@ -193,6 +203,7 @@ const cityData = ref([]);
 const seletedCounty = ref("");
 
 import debounce from "lodash.debounce";
+import { showNotification } from "@/util/notification";
 
 const searchCity = debounce(async (event) => {
   try {
@@ -257,11 +268,36 @@ const formData = ref({
   customer_id: userID?.id ? userID?.id : "",
 });
 
+const token = ref();
+
 const submitPlaceOrder = async () => {
+  if (!address.value.full_name) {
+    return showNotification("warning", "Name is require");
+  }
+  if (!address.value.mobile) {
+    return showNotification("warning", "mobile number is require");
+  }
+  if (!address.value.address) {
+    return showNotification("warning", "address is require");
+  }
+  if (!seletedCounty.value) {
+    return showNotification("warning", "country is require");
+  }
+  if (!address.value.city_id) {
+    return showNotification("warning", "City is require");
+  }
+  if (!formData.value.payment_method_id) {
+    return showNotification("warning", "Payment method is require");
+  }
+
+  if (formData.value.sale_products.length == 0) {
+    return showNotification("warning", "sale_products is required");
+  }
+
   try {
-    const token = localStorage.getItem("token" || "");
-    console.log(token);
-    const config = { headers: { Authorization: `Bearer ${token}` } };
+    // const token = localStorage.getItem("token" || "");
+
+    const config = { headers: { Authorization: `Bearer ${token.value}` } };
     const res = await axios.post(
       `${apiBasePharma}/sales`,
       {
@@ -282,7 +318,7 @@ const submitPlaceOrder = async () => {
 
     if (res.data?.status === "success") {
       cartStore.clearCart();
-      router.push({ name: "home" });
+      router.push({ name: "order" });
     }
   } catch (error) {
     console.log(error);
@@ -297,6 +333,10 @@ onMounted(async () => {
   searchCountry("");
   getPaymentMethods();
 });
+
+if (token) {
+  token.value = localStorage.getItem("token" || "");
+}
 </script>
 
 <style lang="scss" scoped></style>
