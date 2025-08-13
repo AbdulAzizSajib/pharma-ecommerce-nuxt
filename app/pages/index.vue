@@ -97,16 +97,23 @@
     <template v-for="collection in collections">
       <div class="flex justify-between items-center px-4 mt-3">
         <div>
-          <h2
-            class="lg:text-lg font-semibold bg-[#6996cf] text-white px-4 py-1 rounded my-2"
+          <nuxt-link
+            :to="{
+              name: 'shop',
+              query: { supplier_ID: collection?.supplier?.id },
+            }"
           >
-            {{ collection?.supplier?.company_name }}
-            {{ collection?.id }}
-          </h2>
+            <button class="border-b text-2xl font-bold py-1">
+              {{ collection?.supplier?.company_name }}
+            </button>
+          </nuxt-link>
         </div>
         <div>
           <nuxt-link
-            :to="{ name: 'shop', query: { supplier_ID: collection?.id } }"
+            :to="{
+              name: 'shop',
+              query: { supplier_ID: collection?.supplier?.id },
+            }"
           >
             <button class="bg-[#6996cf] text-white px-6 py-1 rounded">
               View All
