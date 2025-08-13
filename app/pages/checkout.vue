@@ -10,12 +10,6 @@
           <!-- Billing Details Section -->
           <div class="w-full lg:w-2/3 mb-8 lg:mb-0">
             <h2 class="text-2xl font-semibold mb-4">Billing Details</h2>
-            <p
-              v-if="!userID"
-              class="text-white mb-4 text-xl bg-red-600 p-2 rounded font-semibold text-center"
-            >
-              * * Please login to place an order * *
-            </p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <!-- Name Field -->
@@ -28,7 +22,6 @@
                   class="w-full border rounded px-3 py-2"
                   placeholder="Your Name"
                   v-model="address.full_name"
-                  :disabled="!userID"
                 />
               </div>
 
@@ -42,7 +35,6 @@
                   class="w-full border rounded px-3 py-2"
                   placeholder="Mobile Number"
                   v-model="address.mobile"
-                  :disabled="!userID"
                 />
               </div>
 
@@ -56,7 +48,6 @@
                   class="w-full border rounded px-3 py-2"
                   placeholder="Email Address"
                   v-model="address.address"
-                  :disabled="!userID"
                 />
               </div>
 
@@ -66,7 +57,6 @@
                 >
 
                 <a-select
-                  :disabled="!userID"
                   v-model:value="seletedCounty"
                   show-search
                   :filterOption="false"
@@ -85,7 +75,6 @@
                   >City <span class="text-red-500">*</span></label
                 >
                 <a-select
-                  :disabled="!userID"
                   v-model:value="address.city_id"
                   show-search
                   :filterOption="false"
@@ -104,7 +93,6 @@
               <div>
                 <label class="block text-sm font-medium mb-1">Notes</label>
                 <input
-                  :disabled="!userID"
                   class="w-full border rounded px-3 py-2"
                   placeholder="Notes"
                   v-model="address.note"
@@ -125,7 +113,6 @@
                   class="flex items-center gap-2"
                 >
                   <input
-                    :disabled="!userID"
                     type="radio"
                     name="payment"
                     v-model="formData.payment_method_id"
@@ -140,10 +127,9 @@
             <!-- Submit Button -->
             <div class="mt-6">
               <button
-                :disabled="!userID"
                 type="submit"
                 class="w-full bg-[#6996cf] text-white py-2 rounded hover:bg-orange-600 disabled:bg-gray-300"
-                @click="submitPlaceOrder"
+                @click="submitOrder"
               >
                 Place Order
               </button>
@@ -191,10 +177,6 @@ import { useRouter } from "vue-router";
 const cartStore = useCartStore();
 
 const router = useRouter();
-// const loginStore = useLoginStore();
-
-// const { user } = storeToRefs(loginStore);
-let userId = ref(null);
 
 const { totalPrice, cartProduct } = storeToRefs(cartStore);
 
@@ -247,8 +229,6 @@ const getPaymentMethods = async () => {
   }
 };
 
-const userID = JSON.parse(localStorage.getItem("user" || ""));
-
 const address = ref({
   full_name: "",
   mobile: "",
@@ -265,12 +245,11 @@ const formData = ref({
   shipping_cost: "",
   billing_address: address.value,
   payment_method_id: "",
-  customer_id: userID?.id ? userID?.id : "",
 });
 
 const token = ref();
 
-const submitPlaceOrder = async () => {
+const submit_loginUserOrder = async () => {
   if (!address.value.full_name) {
     return showNotification("warning", "Name is require");
   }
@@ -290,13 +269,11 @@ const submitPlaceOrder = async () => {
     return showNotification("warning", "Payment method is require");
   }
 
-  if (formData.value.sale_products.length == 0) {
-    return showNotification("warning", "sale_products is required");
-  }
+  // if (formData.value.sale_products.length == 0) {
+  //   return showNotification("warning", "sale_products is required");
+  // }
 
   try {
-    // const token = localStorage.getItem("token" || "");
-
     const config = { headers: { Authorization: `Bearer ${token.value}` } };
     const res = await axios.post(
       `${apiBasePharma}/sales`,
@@ -317,7 +294,7 @@ const submitPlaceOrder = async () => {
     );
 
     if (res.data?.status === "success") {
-      cartStore.clearCart();
+      cartStore.$reset();
       router.push({ name: "order" });
     }
   } catch (error) {
@@ -325,18 +302,79 @@ const submitPlaceOrder = async () => {
   }
 };
 
-onMounted(async () => {
-  if (userId.value) {
-    await getAddress();
-    console.log(addressField.value);
+const submit_GuestUserOrder = async () => {
+  if (!address.value.full_name) {
+    return showNotification("warning", "Name is require");
   }
+  if (!address.value.mobile) {
+    return showNotification("warning", "mobile number is require");
+  }
+  if (!address.value.address) {
+    return showNotification("warning", "address is require");
+  }
+  if (!seletedCounty.value) {
+    return showNotification("warning", "country is require");
+  }
+  if (!address.value.city_id) {
+    return showNotification("warning", "City is require");
+  }
+  if (!formData.value.payment_method_id) {
+    return showNotification("warning", "Payment method is require");
+  }
+  if (!formData.value.sale_products) {
+    return showNotification("warning", "sale_products is required");
+  }
+
+  try {
+    const config = { headers: { Authorization: `Bearer ${token.value}` } };
+    const res = await axios.post(
+      `${apiBasePharma}/guest-sale`,
+      {
+        ...formData.value,
+        sale_products: cartProduct.value.map((item) => ({
+          product_id: item?.id || "",
+          product_name: item?.name || "",
+          price: item?.price || "",
+          quantity: item?.quantity || "",
+          pack_size_id: item?.pack_size?.id || "",
+          pack_size_quantity: item?.pack_size?.quantity || "",
+          total_quantity: item?.total_quantity || "",
+          total: item?.total_price || "",
+        })),
+      },
+      config
+    );
+
+    if (res.data?.status === "success") {
+      cartStore.$reset();
+      // store.$reset()
+      router.push("/");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const submitOrder = () => {
+  if (token.value) {
+    submit_loginUserOrder();
+  } else {
+    submit_GuestUserOrder();
+  }
+};
+
+onMounted(async () => {
+  // if (userId.value) {
+  //   await getAddress();
+  //   console.log(addressField.value);
+  // }
   searchCountry("");
   getPaymentMethods();
+  if (process.client) {
+    token.value = localStorage.getItem("token" || "");
+  }
+  console.log(token.value);
 });
-
-if (token) {
-  token.value = localStorage.getItem("token" || "");
-}
 </script>
 
 <style lang="scss" scoped></style>

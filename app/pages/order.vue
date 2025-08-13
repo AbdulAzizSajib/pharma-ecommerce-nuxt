@@ -55,7 +55,7 @@
                     }"
                     class="text-green-600 font-medium"
                   >
-                    {{ index + 1 }} P:{{ item?.id }}
+                    {{ item?.sale_code }}
                   </router-link>
                 </td>
                 <td class="px-4 py-2 border border-gray-200">

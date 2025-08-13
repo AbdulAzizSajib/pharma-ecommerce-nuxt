@@ -1,212 +1,215 @@
 <template>
   <NuxtLayout>
-    <div>
-      <div class="relative h-[100px] hidden lg:block overflow-hidden">
-        <!-- <img
-        class="w-full"
-        src="@/assets/images/Breadcrumbs.png"
-        alt="Breadcrumbs Image"
-      /> -->
-        <div
-          class="absolute inset-0 flex justify-center items-center text-white"
-        >
-          <nav
-            aria-label="breadcrumb"
-            class="w-full p-4 dark:bg-gray-100 dark:text-gray-800"
-          >
-            <ol class="flex h-8 space-x-2">
-              <li class="flex items-center">
-                <a
-                  rel="noopener noreferrer"
-                  href="#"
-                  title="Back to homepage"
-                  class="hover:underline"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="w-5 h-5 pr-1 dark:text-gray-600"
-                  >
-                    <path
-                      d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"
-                    ></path>
-                  </svg>
-                </a>
-              </li>
-              <li class="flex items-center space-x-2">
-                <i class="fa-solid fa-angle-right"></i>
-                <nuxt-link
-                  to="/"
-                  class="flex items-center px-1 capitalize hover:underline"
-                >
-                  Home
-                </nuxt-link>
-              </li>
-              <li class="flex items-center space-x-2">
-                <RightOutlined />
-                <span
-                  rel="noopener noreferrer"
-                  href="#"
-                  class="flex items-center px-1 capitalize"
-                  >{{ productDetail?.product?.name }}</span
-                >
-              </li>
-            </ol>
+    <div class="min-h-screen">
+      <!-- Enhanced Breadcrumb -->
+      <div class="relative bg-white">
+        <div class="container mx-auto px-4 py-4">
+          <nav class="flex items-center space-x-2 text-sm">
+            <nuxt-link
+              to="/"
+              class="flex items-center text-gray-500 hover:text-blue-600 transition-colors"
+            >
+              <Icon class="size-4 mr-2" icon="ic:baseline-home" />
+              Home
+            </nuxt-link>
+            <Icon icon="iconamoon:arrow-right-2-thin" />
+            <span class="text-gray-800 font-medium truncate">{{
+              productDetail?.product?.name
+            }}</span>
           </nav>
         </div>
       </div>
 
-      <section class="mt-8">
-        <div class="px-4">
-          <div></div>
-          <div class="grid grid-cols-1 px-5 gap-12 lg:grid-cols-5 lg:gap-12">
-            <div class="lg:col-span-3 lg:row-end-1">
-              <div class="lg:flex">
-                <div class="lg:order-2 lg:ml-5">
-                  <div class="overflow-hidden rounded-lg">
-                    <!-- <Loader v-if="isFetching" /> -->
-                    <a-image
-                      :width="600"
-                      :height="400"
-                      class="object-cover"
-                      :src="`${imgBasePharma}/${productDetail?.product?.product_images[0]?.path}`"
-                    />
-                  </div>
+      <!-- Main Product Section -->
+      <section class="my-5">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <!-- Image Gallery Section -->
+          <div class="space-y-6">
+            <!-- Main Image with Zoom Effect -->
+            <div class="relative group w-[80%]">
+              <div
+                class="aspect-square bg-white rounded-3xl shadow-xl overflow-hidden border"
+              >
+                <div
+                  class="relative w-full h-full group-hover:scale-110 transition-transform duration-700 ease-out"
+                >
+                  <a-image
+                    :width="600"
+                    :height="600"
+                    class="w-full h-full object-cover rounded-2xl"
+                    :src="`${imgBasePharma}/${productDetail?.product?.product_images[0]?.path}`"
+                    :fallback="default_img"
+                  />
                 </div>
-
-                <!-- <div class="mt-2 w-full lg:w-32 lg:flex-shrink-0">
-                  <div class="flex flex-row items-start lg:flex-col">
-                    <button
-                      type="button"
-                      class="flex-0 border items-center w-full flex justify-center aspect-square mb-3 h-20 overflow-hidden rounded-lg text-center"
-                    >
-                      <a-image
-                        class="object-cover border"
-                        :src="default_img"
-                        alt=""
-                      />
-                    </button>
-                    <button
-                      type="button"
-                      class="flex-0 border items-center w-full flex justify-center aspect-square mb-3 h-20 overflow-hidden rounded-lg text-center"
-                    >
-                      <a-image
-                        class="object-cover border"
-                        :src="default_img"
-                        alt=""
-                      />
-                    </button>
-                    <button
-                      type="button"
-                      class="flex-0 border items-center w-full flex justify-center aspect-square mb-3 h-20 overflow-hidden rounded-lg text-center"
-                    >
-                      <a-image
-                        class="object-cover border"
-                        :src="default_img"
-                        alt=""
-                      />
-                    </button>
-                  </div>
-                </div> -->
               </div>
             </div>
 
-            <div class="lg:col-span-2 lg:row-span-2 lg:row-end-2">
-              <h1
-                class="flex items-center gap-2 font-bold text-gray-900 text-sm lg:text-xl"
+            <!-- Thumbnail Gallery -->
+            <div class="flex space-x-4 overflow-x-auto pb-4">
+              <div
+                v-for="(item, index) in productDetail?.product?.product_images"
+                :key="index"
+                class="flex-shrink-0"
               >
-                {{ productDetail?.product?.name }}
-              </h1>
-              <p class="text-sm p-1">
-                Generics : {{ productDetail?.product?.generic?.name }}
-              </p>
-              <p class="text-sm p-1">
-                Categories : {{ productDetail?.categories?.at(0)?.name }}
-              </p>
+                <button
+                  type="button"
+                  class="w-20 h-20 bg-white rounded-xl border transition-all duration-300 overflow-hidden group"
+                >
+                  <a-image
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    :src="`${imgBasePharma}/${item?.path}`"
+                    :fallback="default_img"
+                    alt="Product thumbnail"
+                  />
+                </button>
+              </div>
+            </div>
+          </div>
 
-              <h2 class="mt-2 text-xl font-bold text-gray-900">
-                {{ productDetail?.product?.product_prices?.selling_price }} BDT
-              </h2>
+          <!-- Product Details Section -->
+          <div class="space-y-6">
+            <!-- Product Title & Rating -->
+            <div class="space-y-4">
+              <div class="flex items-start justify-between">
+                <h1
+                  class="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight"
+                >
+                  {{ productDetail?.product?.name }}
+                </h1>
+              </div>
+            </div>
 
-              <hr class="border mt-3" />
+            <!-- Product Info Cards -->
+            <div class="grid grid-cols-2 gap-4">
+              <div
+                class="px-4 py-1 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border border-blue-100"
+              >
+                <p class="text-sm font-medium text-gray-600 mb-1">Generic</p>
+                <p class="font-bold text-gray-900">
+                  {{ productDetail?.product?.generic?.name }}
+                </p>
+              </div>
+              <div
+                class="px-4 py-1 bg-gradient-to-r from-green-50 to-emerald-50 rounded-2xl border border-green-100"
+              >
+                <p class="text-sm font-medium text-gray-600 mb-1">Category</p>
+                <p class="font-bold text-gray-900">
+                  {{ productDetail?.categories?.at(0)?.name }}
+                </p>
+              </div>
+            </div>
 
-              <div class="flex justify-between">
+            <!-- Price Section -->
+            <div class="p-6 bg-white rounded-2xl border">
+              <div class="flex items-baseline space-x-3 mb-4">
+                <p class="text-xl font-semibold">Price :</p>
+                <span class="text-xl font-semibold text-gray-900">
+                  {{ productDetail?.product?.product_prices?.selling_price }}
+                  BDT
+                </span>
+              </div>
+            </div>
+
+            <!-- Brand Info -->
+            <div class="p-4 bg-white rounded-2xl shadow-lg border">
+              <div class="flex items-center space-x-4">
+                <div
+                  class="w-16 h-16 bg-gradient-to-r from-gray-100 to-gray-200 rounded-full flex items-center justify-center"
+                >
+                  <svg
+                    class="w-8 h-8 text-gray-600"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-4m-5 0H9m0 0H5m0 0h2m0 0h4"
+                    ></path>
+                  </svg>
+                </div>
                 <div>
-                  <h2 class="flex items-center">
-                    Brand:
-                    <span class="my-2">
-                      {{ productDetail?.product?.supplier?.company_name }}</span
-                    >
-                  </h2>
+                  <p class="text-sm font-medium text-gray-600">Brand</p>
+                  <p class="text-xl font-bold text-gray-900">
+                    {{ productDetail?.product?.supplier?.company_name }}
+                  </p>
+                  <p class="text-sm text-gray-500">
+                    Trusted pharmaceutical company
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quantity & Add to Cart -->
+            <div class="space-y-6">
+              <!-- Quantity Selector -->
+              <div class="flex items-center space-x-4">
+                <span class="text-lg font-semibold text-gray-700"
+                  >Quantity:</span
+                >
+                <div
+                  class="flex items-center bg-white rounded-2xl shadow-lg border overflow-hidden"
+                >
+                  <button
+                    @click="quantity > 1 && quantity--"
+                    class="px-6 py-4 text-xl font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200"
+                    :disabled="quantity <= 1"
+                  >
+                    −
+                  </button>
+                  <input
+                    v-model="quantity"
+                    type="number"
+                    min="1"
+                    class="w-20 py-4 text-xl font-bold text-center border-0 focus:ring-0 focus:outline-none"
+                  />
+                  <button
+                    @click="quantity++"
+                    class="px-6 py-4 text-xl font-bold text-gray-600 hover:bg-gray-50 hover:text-gray-900 transition-all duration-200"
+                  >
+                    +
+                  </button>
                 </div>
               </div>
 
-              <div
-                class="mt-2 space-x-3 flex flex-col items-center justify-between space-y-4 border-t border-b py-4 sm:flex-row sm:space-y-0"
-              >
-                <div class="flex items-end rounded-lg">
-                  <div
-                    class="flex justify-between space-x-5 items-center py-2 px-1 border"
-                  >
-                    <button @click="quantity++" class="text-xl btn btn-outline">
-                      +
-                    </button>
-                    <input
-                      class="w-12 outline-none text-center text-xl"
-                      v-model="quantity"
-                      type="number"
-                    />
-                    <button
-                      @click="quantity > 0 && quantity--"
-                      class="text-xl btn btn-outline"
-                    >
-                      -
-                    </button>
-                  </div>
-                </div>
-
+              <!-- Action Buttons -->
+              <div class="space-y-4">
                 <button
                   @click="handleAddToCart"
-                  type="button"
-                  class="w-full xl:text-lg font-medium tracking-widest uppercase rounded-full border-2 border-[#007C46] bg-[#007C46] py-3 px-10 text-white hover:text-[#007C46] hover:bg-transparent"
+                  class="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold py-5 px-8 rounded-2xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center space-x-3"
                 >
-                  Add to Cart
-                </button>
-                <button
-                  @click="handleAddWishlist"
-                  type="button"
-                  class="btn text-lg rounded-full"
-                >
-                  <HeartOutlined />
+                  <Icon class="size-5" icon="bxs:cart" />
+                  <span class="text-lg">ADD TO CART</span>
                 </button>
               </div>
-
-              <ul class="mt-8 space-y-2">
-                <li
-                  class="flex items-center text-left text-sm font-medium text-gray-600"
-                >
-                  <span class="mr-2">Category :</span>
-                  {{ productDetail?.category?.title }}
-                </li>
-                <li
-                  class="flex items-center text-left text-sm font-medium text-gray-600"
-                >
-                  <span class="mr-2">Tags :</span>
-
-                  <a-tag
-                    v-for="(tag, index) in productDetail?.tags
-                      ?.split(',')
-                      .filter((tag) => tag.trim() !== '')"
-                    :key="index"
-                    class="capitalize"
-                    color="green"
-                  >
-                    {{ tag.trim() }}
-                  </a-tag>
-                </li>
-              </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Products Section -->
+      <section class="container mx-auto px-4 py-16 my-5">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl font-bold text-gray-900 mb-4">
+            You Might Also Like
+          </h2>
+        </div>
+
+        <!-- Placeholder for related products -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div
+            v-for="i in 4"
+            :key="i"
+            class="bg-white rounded-2xl shadow-xl p-6 border hover:shadow-2xl transition-all duration-300 transform hover:scale-105"
+          >
+            <div class="aspect-square bg-gray-100 rounded-xl mb-4"></div>
+            <h3 class="font-bold text-gray-900 mb-2">
+              Related Product {{ i }}
+            </h3>
+            <p class="text-gray-600 mb-3">Product description here...</p>
+            <p class="text-xl font-bold text-green-600">৳ 299</p>
           </div>
         </div>
       </section>
@@ -217,11 +220,12 @@
 <script setup>
 import { apiBasePharma, imgBasePharma } from "@/config";
 import axios from "axios";
-
 import default_img from "../../assets/images/default.jpg";
+
 const id = useRoute()?.params?.id;
 const productDetail = ref();
 const loading = ref(false);
+
 const getProductDetails = async () => {
   try {
     const res = await axios.get(`${apiBasePharma}/product-show/${id}`);
@@ -233,13 +237,13 @@ const getProductDetails = async () => {
 
 import { useCartStore } from "@/stores/cart";
 import { toast } from "vue3-toastify";
+import { Icon } from "@iconify/vue";
+
 const cartStore = useCartStore();
 const { getCart } = cartStore;
-// const { cartProduct } = storeToRefs(cartStore);
 const quantity = ref(1);
-const handleAddToCart = () => {
-  // getCart(productDetail.value);
 
+const handleAddToCart = () => {
   getCart(
     productDetail.value?.product?.id,
     productDetail.value?.product?.name,
@@ -260,4 +264,51 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+/* Custom animations and effects */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.6s ease-out forwards;
+}
+
+/* Hover effects for images */
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+/* Custom scrollbar for thumbnails */
+::-webkit-scrollbar {
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 2px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Gradient text effect */
+.gradient-text {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+</style>

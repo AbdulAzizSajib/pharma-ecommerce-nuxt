@@ -34,10 +34,7 @@
                         v-if="categorysLoading"
                         class="flex justify-center items-center gap-4"
                       >
-                        <Icon
-                          class="animate-spin"
-                          icon="icon-park-outline:loading"
-                        />
+                        <img class="" :src="gif" alt="" />
                         <p>Loading...</p>
                       </li>
 
@@ -80,10 +77,7 @@
                         v-if="suppliersLoading"
                         class="flex justify-center items-center gap-4"
                       >
-                        <Icon
-                          class="animate-spin"
-                          icon="icon-park-outline:loading"
-                        />
+                        <img class="" :src="gif" alt="" />
                         <p>Loading...</p>
                       </li>
                       <li v-else v-for="(cat, index) in supplier" :key="index">
@@ -122,8 +116,10 @@
             <!-- prodcuts -->
 
             <div class="mb-3">
-              <div>
-                <p class="text-xl" v-if="loading">Loading ...</p>
+              <div class="flex justify-center item-center">
+                <!-- <p class="text-xl" v-if="loading">Loading ..................</p> -->
+
+                <img v-if="loading" class="" :src="gif" alt="" />
 
                 <p
                   class="text-xl"
@@ -208,6 +204,7 @@ import { apiBasePharma } from "@/config";
 import axios from "axios";
 import { ref } from "vue";
 import { useRoute } from "vue-router";
+import gif from "../../assets/images/Yellow.gif";
 
 const allProduct = ref([]);
 import medisine from "../../assets/images/medisine.jpeg";
@@ -236,13 +233,12 @@ const suppliersLoading = ref(false);
 const sort_by = ref("asc");
 //
 const route = useRoute();
-const slug = route.query.slug;
+const category_ID = route.query.category_ID;
+const supplier_ID = route.query.supplier_ID;
 
 //
 const backupData = ref();
 
-console.log("slug.value", slug);
-//
 const getCategorys = async () => {
   try {
     categorysLoading.value = true;
@@ -278,8 +274,10 @@ const getAlldata = async () => {
       `${apiBasePharma}/all-products-paginated?page=${
         currentPage.value
       }&search=&paginate=${pageSize.value}&category_id=${
-        category_id.value || slug || ""
-      }&supplier_id=${supplier_id.value || ""}&sort_by=${sort_by.value || ""}`
+        category_id.value || category_ID || ""
+      }&supplier_id=${supplier_id.value || supplier_ID || ""}&sort_by=${
+        sort_by.value || ""
+      }`
     );
     loading.value = false;
     if (res.data) {

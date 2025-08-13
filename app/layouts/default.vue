@@ -66,14 +66,14 @@
       <!-- cart -->
 
       <div class="hidden md:flex space-x-1 items-center">
-        <nuxt-link
+        <!-- <nuxt-link
           :to="{ name: 'wishlist' }"
           class="p-2 rounded-full bg-primary hover:bg-primary-dark transition duration-300"
           title="Wishlist"
         >
           <Icon class="size-6 mr-2" icon="mdi-light:heart" />
         </nuxt-link>
-        |
+        | -->
         <nuxt-link :to="{ name: 'cart' }" class="relative" title="Cart">
           <a-badge :count="cartProduct?.length">
             <button class="">
@@ -97,9 +97,9 @@
             <a-menu-item v-if="token">
               <nuxt-link to="/order"> My Orders</nuxt-link>
             </a-menu-item>
-            <a-menu-item v-if="token">
+            <!-- <a-menu-item v-if="token">
               <nuxt-link to="/profile"> profile Setting</nuxt-link>
-            </a-menu-item>
+            </a-menu-item> -->
             <a-menu-item>
               <template v-if="isLoggedIn">
                 <button

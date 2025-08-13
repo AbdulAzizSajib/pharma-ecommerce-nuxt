@@ -59,7 +59,9 @@
         class="mySwiper"
       >
         <swiper-slide v-for="cat in companies" :key="cat?.id">
-          <nuxt-link :to="{ name: 'shop', query: { slug: cat?.id || 0 } }">
+          <nuxt-link
+            :to="{ name: 'shop', query: { category_ID: cat?.id || 0 } }"
+          >
             <div class="w-full flex flex-col justify-center items-center">
               <div
                 class="bg-[#c0d3ec] w-32 h-32 flex justify-center items-center cursor-pointer text-white font-bold text-2xl uppercase rounded-lg text-2xl"
@@ -96,13 +98,16 @@
       <div class="flex justify-between items-center px-4 mt-3">
         <div>
           <h2
-            class="lg:text-xl font-bold bg-[#6996cf] text-white px-4 py-1 rounded"
+            class="lg:text-lg font-semibold bg-[#6996cf] text-white px-4 py-1 rounded my-2"
           >
             {{ collection?.supplier?.company_name }}
+            {{ collection?.id }}
           </h2>
         </div>
         <div>
-          <nuxt-link :to="{ name: 'shop' }">
+          <nuxt-link
+            :to="{ name: 'shop', query: { supplier_ID: collection?.id } }"
+          >
             <button class="bg-[#6996cf] text-white px-6 py-1 rounded">
               View All
             </button>
@@ -111,7 +116,7 @@
       </div>
       <div class="mb-3">
         <div
-          class="grid gap-4 mt-4 px-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-4"
+          class="grid gap-4 mt-4 px-4 grid-cols-2 md:grid-cols-2 lg:grid-cols-5"
         >
           <div
             class="overflow-hidden border rounded product-card"
@@ -119,15 +124,18 @@
             :key="index"
           >
             <!-- Product Image -->
-            <div class="relative border-b overflow-hidden rounded-t">
+            <div
+              class="relative border-b overflow-hidden rounded-t w-[250px] h-[200px]"
+            >
               <nuxt-link
                 :to="{ name: 'product-id', params: { id: item?.id || 0 } }"
               >
                 <a-image
-                  :width="350"
-                  :height="300"
+                  :width="250"
+                  :height="200"
                   class="object-cover"
                   :src="`${imgBasePharma}/${item?.product_images[0]?.path}`"
+                  :fallback="default_img"
                 />
               </nuxt-link>
             </div>
@@ -186,7 +194,7 @@ const cartStore = useCartStore();
 const { getCart } = cartStore;
 
 const sliders = [{ image: sliderImg_one }];
-
+import default_img from "../../assets/images/default.jpg";
 const modules = [Autoplay, Navigation];
 
 import medisine from "../../assets/images/medisine.jpeg";
@@ -243,6 +251,7 @@ const handleAddToCart = (products) => {
 onMounted(async () => {
   await getCategories();
   await getCollection();
+  // await Promise.all([getCategories(), getCollection()]);
 });
 </script>
 
