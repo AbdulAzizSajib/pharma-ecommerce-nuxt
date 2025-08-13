@@ -51,5 +51,7 @@ export const useCartStore = defineStore("cartStore", {
       this.totalPrice = 0;
     },
   },
-  persist: true,
+  persist: {
+    storage: piniaPluginPersistedstate.localStorage(),
+  },
 });

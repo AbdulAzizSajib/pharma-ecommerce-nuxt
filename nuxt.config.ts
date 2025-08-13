@@ -13,6 +13,6 @@ export default defineNuxtConfig({
     "@nuxtjs/tailwindcss",
     "@ant-design-vue/nuxt",
     "@pinia/nuxt",
-    // "@pinia-plugin-persistedstate/nuxt",
+    "pinia-plugin-persistedstate/nuxt",
   ],
 });
