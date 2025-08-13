@@ -21,11 +21,13 @@
                   Uncheck Category
                 </button>
               </div>
-              <!-- <input
-                placeholder="search category"
+              <a-input
+                v-model:value="categoryInfo"
+                @input="searchCategory"
+                placeholder="search Supplier"
                 type="text"
                 class="border w-full px-2 py-1 mt-4 rounded"
-              /> -->
+              />
               <ul class="mt-2 max-h-96 overflow-y-auto scrollable-list">
                 <li class="flex items-center justify-between">
                   <div class="flex items-center">
@@ -64,11 +66,13 @@
                   Uncheck Supplier
                 </button>
               </div>
-              <!-- <input
+              <a-input
+                v-model:value="supplierInfo"
+                @input="searchSupplier"
                 placeholder="search Supplier"
                 type="text"
                 class="border w-full px-2 py-1 mt-4 rounded"
-              /> -->
+              />
               <ul class="mt-2 max-h-96 overflow-y-auto scrollable-list">
                 <li class="flex items-center justify-between">
                   <div class="flex items-center">
@@ -184,6 +188,7 @@
               </div>
             </div>
             <a-pagination
+              v-if="backupData?.total > pageSize"
               class="mt-3"
               v-model:current="currentPage"
               :total="backupData?.total"
@@ -223,11 +228,16 @@ const currentPage = ref(1);
 const pageSize = ref(50);
 //
 const categorys = ref([]);
+const categoryInfo = ref();
 const category_id = ref();
+const backupCategory = ref([]);
 const categorysLoading = ref(false);
 //
+
 const supplier = ref([]);
+const supplierInfo = ref();
 const supplier_id = ref();
+const backupSupplier = ref([]);
 const suppliersLoading = ref(false);
 //
 const sort_by = ref("asc");
@@ -246,10 +256,21 @@ const getCategorys = async () => {
     categorysLoading.value = false;
     if (res.data) {
       categorys.value = res?.data;
+      backupCategory.value = res?.data;
     }
   } catch (error) {
     categorysLoading.value = false;
     console.log(error.message);
+  }
+};
+
+const searchCategory = () => {
+  if (categoryInfo.value) {
+    categorys.value = backupCategory.value.filter((cat) =>
+      cat.name.toLowerCase().includes(categoryInfo.value.toLowerCase())
+    );
+  } else {
+    categorys.value = [...backupCategory.value];
   }
 };
 
@@ -260,10 +281,21 @@ const getSupplier = async () => {
     suppliersLoading.value = false;
     if (res.data) {
       supplier.value = res?.data;
+      backupSupplier.value = res?.data;
     }
   } catch (error) {
     console.log(error.message);
     suppliersLoading.value = false;
+  }
+};
+
+const searchSupplier = () => {
+  if (supplierInfo.value) {
+    supplier.value = backupSupplier.value.filter((sup) =>
+      sup.company_name.toLowerCase().includes(supplierInfo.value.toLowerCase())
+    );
+  } else {
+    supplier.value = [...backupSupplier.value];
   }
 };
 
@@ -312,6 +344,13 @@ const pagination = async (page) => {
 };
 
 onMounted(async () => {
+  if (supplier_ID) {
+    supplier_id.value = supplier_ID;
+  }
+
+  if (category_ID) {
+    category_id.value = category_ID;
+  }
   await getAlldata();
   await getCategorys();
   await getSupplier();
